@@ -1,19 +1,19 @@
 class Card {
     Card(int val, char suit){
-        this._val = val;
+        this._val = val + 2;
         this._suit = suit;
-        if (val > 1 && val < 11) {
-            this._valName = Integer.toString(val);
-        } else if (val == 1) {
+        if (this._val > 1 && this._val < 11) {
+            this._valName = Integer.toString(this._val);
+        } else if (this._val == 14) {
             this._valName = "Ace";
-        } else if (val == 11) {
+        } else if (this._val == 11) {
             this._valName = "Jack";
-        } else if (val == 12) {
+        } else if (this._val == 12) {
             this._valName = "Queen";
-        } else if (val == 13) {
+        } else if (this._val == 13) {
             this._valName = "King";
         } else {
-            this._valName = "null";
+            throw new IllegalArgumentException("val must be between 0 and 12");
         }
 
         if (suit == 'D') {
@@ -25,7 +25,7 @@ class Card {
         } else if (suit == 'S') {
             this._suitName = "Spades";
         } else {
-            this._suitName = "null";
+            throw new IllegalArgumentException("suit must be one of 'D', 'C', 'H', or 'S'");
         }
     }
     int getVal(){
@@ -48,4 +48,9 @@ class Card {
     private String _suitName;
     private int _val;
     private char _suit;
+
+    public static void main(String[] args) {
+        Card x = new Card(12, 'H ');
+        System.out.println(x);
+    }
 }
