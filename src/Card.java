@@ -1,5 +1,5 @@
 class Card {
-    Card(int val, char suit){
+    public Card(int val, char suit){
         this._val = val + 2;
         this._suit = suit;
         if (this._val > 1 && this._val < 11) {
@@ -28,16 +28,16 @@ class Card {
             throw new IllegalArgumentException("suit must be one of 'D', 'C', 'H', or 'S'");
         }
     }
-    int getVal(){
+    public int getVal(){
         return this._val;
     }
-    String getValName(){
+    public String getValName(){
         return this._valName;
     }
-    char getSuit() {
+    public char getSuit() {
         return this._suit;
     }
-    String getSuitName(){
+    public String getSuitName(){
         return this._suitName;
     }
     public String toString() {
