@@ -50,7 +50,7 @@ class Card {
     private char _suit;
 
     public static void main(String[] args) {
-        Card x = new Card(12, 'H ');
+        Card x = new Card(12, 'H');
         System.out.println(x);
     }
 }
