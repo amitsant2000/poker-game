@@ -49,7 +49,6 @@ class Deck {
     public String toString() {
         return _deck.toString();
     }
-
     public static void main(String[] args) {
         Deck x = new Deck();
         System.out.println(x);
