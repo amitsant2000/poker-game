@@ -111,6 +111,30 @@ public class Player {
             return max;
         }
     }
+    public int fourPairChecker() {
+        if (_hand.isEmpty()) {
+            throw new IllegalCallerException("It is not possible to check for cards when there are no cards dealt.");
+        } else {
+            ArrayList<Integer> fourPairContainer = new ArrayList<>();
+            for (int i = 0; i < _hand.size() - 3; i++) {
+                int a = _hand.get(i).getVal();
+                for (int j = i + 1; j < _hand.size() - 2; j++) {
+                    int b = _hand.get(j).getVal();
+                    for (int k = j + 1; k < _hand.size() - 1; k++) {
+                        int c = _hand.get(k).getVal();
+                        for (int l = k + 1; l < _hand.size(); l++) {
+                            int d = _hand.get(l).getVal();
+                            if (a == b && b == c && c == d) {
+                                return a; /*NOTE: returns a immediately instead of finding all possible values
+                                           * because 7 card hand can only have one four pair */
+                            }
+                        }
+                    }
+                }
+            }
+            return -1;
+        }
+    }
     public ArrayList<Integer> pairFinder() {
         ArrayList<Integer> pairContainer = new ArrayList<>();
         for (int i = 0; i < _hand.size() - 1; i++) {
@@ -130,7 +154,7 @@ public class Player {
             int a = _hand.get(i).getVal();
             for (int j = i + 1 ; j < _hand.size() - 1; j++) {
                 int b = _hand.get(j).getVal();
-                for (int k = j + 1; j < _hand.size(); k++) {
+                for (int k = j + 1; k < _hand.size(); k++) {
                     int c = _hand.get(k).getVal();
                     if (a == b && b == c) {
                         tripleContainer.add(a);
