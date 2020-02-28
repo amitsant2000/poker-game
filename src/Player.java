@@ -1,4 +1,7 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+
+import static java.util.Collections.disjoint;
 import static java.util.Collections.max;
 
 public class Player {
@@ -35,7 +38,7 @@ public class Player {
         if (_hand.size() == 0) {
             throw new IllegalCallerException("It is not possible to check for cards when there are no cards dealt.");
         } else { //FIXME: possible to get rid of this else?
-            int high = 0;
+            int high = -1;
             for (Card a: _hand) {
                 int val = a.getVal();
                 if (val > high) {
@@ -49,7 +52,7 @@ public class Player {
     //FIXME: All checks only verify whether that exists.
 
     public int pairChecker() {
-        if (_hand.size() == 0) {
+        if (_hand.isEmpty()) {
             throw new IllegalCallerException("It is not possible to check for cards when there are no cards dealt.");
         } else {
             ArrayList<Integer> pairContainer = pairFinder();
@@ -57,11 +60,55 @@ public class Player {
         }
     }
     public int doublePairChecker() {
-        if (_hand.size() == 0) {
+        if (_hand.isEmpty()) {
             throw new IllegalCallerException("It is not possible to check for cards when there are no cards dealt.");
         } else {
             ArrayList<Integer> pairContainer = pairFinder();
-            return max(pairContainer);
+            ArrayList<Integer[]> doublePairContainer = new ArrayList<>();
+            for (int i = 0; i < pairContainer.size() - 1; i++) {
+                for (int j = i + 1; j < pairContainer.size(); j++) {
+                    doublePairContainer.add(new Integer[] {pairContainer.get(0), pairContainer.get(1)});
+                }
+            }
+            int max = -1;
+            for (Integer[] elem: doublePairContainer) {
+                int sum;
+                if (elem[0] >= elem[1]) {
+                    sum = 10 * elem[0] + elem[1];
+                } else {
+                    sum = 10 * elem[1] + elem[0];
+                }
+                if (max < sum) {
+                    max = sum;
+                }
+            }
+            return max;
+        }
+    }
+    public int tripleChecker() {
+        if (_hand.isEmpty()) {
+            throw new IllegalCallerException("It is not possible to check for cards when there are no cards dealt.");
+        } else {
+            ArrayList<Integer> tripleContainer = tripleFinder();
+            return max(tripleContainer);
+        }
+    }
+    public int fullHouseChecker() {
+        if (_hand.isEmpty()) {
+            throw new IllegalCallerException("It is not possible to check for cards when there are no cards dealt.");
+        } else {
+            ArrayList<Integer> pairContainer = pairFinder();
+            ArrayList<Integer> tripleContainer = tripleFinder();
+            int max = -1;
+            for (Integer a: tripleContainer) {
+                for (Integer b: pairContainer) {
+                    int sum = 10 * a + b;
+                    if (sum > max) {
+                        max = sum;
+                    }
+                }
+            }
+            return max;
         }
     }
     public ArrayList<Integer> pairFinder() {
@@ -77,7 +124,20 @@ public class Player {
         }
         return pairContainer;
     }
-
-
-
+    public ArrayList<Integer> tripleFinder() {
+        ArrayList<Integer> tripleContainer = new ArrayList<>();
+        for (int i = 0; i < _hand.size() - 2; i++) {
+            int a = _hand.get(i).getVal();
+            for (int j = i + 1 ; j < _hand.size() - 1; j++) {
+                int b = _hand.get(j).getVal();
+                for (int k = j + 1; j < _hand.size(); k++) {
+                    int c = _hand.get(k).getVal();
+                    if (a == b && b == c) {
+                        tripleContainer.add(a);
+                    }
+                }
+            }
+        }
+        return tripleContainer;
+    }
 }

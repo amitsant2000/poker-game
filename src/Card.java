@@ -5,7 +5,7 @@ class Card {
         if (this._val > 1 && this._val < 11) {
             this._valName = Integer.toString(this._val);
         } else if (this._val == 14) {
-            this._valName = "Ace";
+            this._valName = "Ace"; //FIXME: need to adjust value of ace depending on its placement in straight for example
         } else if (this._val == 11) {
             this._valName = "Jack";
         } else if (this._val == 12) {
