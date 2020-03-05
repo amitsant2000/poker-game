@@ -9,7 +9,6 @@ public class Player {
     private String _name;
     private ArrayList<Card> _hand;
     private int _balance;
-    //TODO: Implement dictionary or some other data structure to hold ranks of each hand.
 
     public Player(String name, int balance) {
         _name = name;
@@ -18,6 +17,12 @@ public class Player {
     }
     public void draw(Deck a) {
         _hand = a.deal(2);
+    }
+    public ArrayList<Card> getHand() {
+        return _hand;
+    }
+    public void setHand(ArrayList<Card> hand) {
+        _hand = hand;
     }
     public void placeBet(int amount) {
         if (amount <= _balance) {
@@ -33,9 +38,6 @@ public class Player {
         if (_hand.size() == 0) {
             throw new IllegalCallerException("It is not possible to check for cards when there are no cards dealt.");
         } else { //FIXME: possible to get rid of this else?
-            if (_hand.isEmpty()) {
-                return -1;
-            }
             ArrayList<Integer> temp = new ArrayList<>();
             for (Card elem: _hand) {
                 temp.add(elem.getVal());
@@ -89,9 +91,8 @@ public class Player {
             for (Card elem : _hand) {
                 temp.add(elem.getVal());
             }
-            int doublePair = 0;
             int max = max(pairContainer);
-            doublePair += 100 * max;
+            int doublePair = 100 * max;
             pairContainer.removeAll(Arrays.asList(max));
             temp.removeAll(Arrays.asList(max));
             max = max(pairContainer);
@@ -106,7 +107,22 @@ public class Player {
             throw new IllegalCallerException("It is not possible to check for cards when there are no cards dealt.");
         } else {
             ArrayList<Integer> tripleContainer = tripleFinder();
-            return max(tripleContainer);
+            if (tripleContainer.isEmpty()) {
+                return -1;
+            } else {
+                ArrayList<Integer> temp = new ArrayList<>();
+                for (Card elem : _hand) {
+                    temp.add(elem.getVal());
+                }
+                int max = max(tripleContainer);
+                int triple = 100 * max;
+                temp.removeAll(Arrays.asList(max));
+                max = max(temp);
+                triple += 10 * max;
+                temp.removeAll(Arrays.asList(max));
+                triple += max(temp);
+                return triple;
+            }
         }
     }
     public int fullHouseChecker() {
@@ -115,12 +131,17 @@ public class Player {
         } else {
             ArrayList<Integer> pairContainer = pairFinder();
             ArrayList<Integer> tripleContainer = tripleFinder();
+            if (pairContainer.isEmpty() || tripleContainer.isEmpty()) {
+                return -1;
+            }
             int max = -1;
             for (Integer a: tripleContainer) {
                 for (Integer b: pairContainer) {
-                    int sum = 10 * a + b;
-                    if (sum > max) {
-                        max = sum;
+                    if (a != b) {
+                        int sum = 10 * a + b;
+                        if (sum > max) {
+                            max = sum;
+                        }
                     }
                 }
             }
@@ -196,12 +217,12 @@ public class Player {
             ArrayList<Integer> straightFlushes = new ArrayList<>();
             _hand.sort(Comparator.comparing(Card::getVal));
             for (int max: straightMaxes) {
-                for (int i = 5; i < _hand.size(); i++) { //check for when not 7 cards and can possibly optimize by going back from i = _hand.size() - 1 so do not have to make arrayList
+                for (int i = 4; i < _hand.size(); i++) { //check for when not 7 cards and can possibly optimize by going back from i = _hand.size() - 1 so do not have to make arrayList
                     Card maxCard = _hand.get(i);
                     if (maxCard.getVal() == max) {
                         char suit = maxCard.getSuit();
                         boolean straightFlush = true;
-                        for (int j = i - 1; j > i - 5; j++) {
+                        for (int j = i - 1; j > i - 5; j--) {
                             if (_hand.get(j).getSuit() != suit || _hand.get(j).getVal() != max + j - i) { //FIXME: check whether second condition necessary
                                 straightFlush = false;
                                 break;
@@ -234,16 +255,13 @@ public class Player {
     }
     public ArrayList<Integer> tripleFinder() {
         ArrayList<Integer> tripleContainer = new ArrayList<>();
-        for (int i = 0; i < _hand.size() - 2; i++) {
-            int a = _hand.get(i).getVal();
-            for (int j = i + 1 ; j < _hand.size() - 1; j++) {
-                int b = _hand.get(j).getVal();
-                for (int k = j + 1; k < _hand.size(); k++) {
-                    int c = _hand.get(k).getVal();
-                    if (a == b && b == c) {
-                        tripleContainer.add(a);
-                    }
-                }
+        int[] x = new int[15];
+        for (Card elem: _hand) {
+            x[elem.getVal()]++;
+        }
+        for (int i = 2; i < 15; i++) {
+            if (x[i] >= 3) {
+                tripleContainer.add(i);
             }
         }
         return tripleContainer;

@@ -1,12 +1,9 @@
 import java.util.ArrayList;
 
 public class Center {
-    private static ArrayList<Card> _cards;
+    private static ArrayList<Card> _cards = new ArrayList<>();
     private static int _pot = 0;
 
-    public Center() {
-        _cards = new ArrayList<>();
-    }
     public static void increasePot(int amount) {
         _pot += amount;
     }
@@ -21,5 +18,8 @@ public class Center {
         } else {
             throw new IllegalStateException("It is not possible to deal when not 0, 3, or 4 cards in the center.");
         }
+    }
+    public static ArrayList<Card> getCenter() {
+        return _cards;
     }
 }
